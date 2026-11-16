@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fluid Mechanics Quiz — MPE271</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b1220; --card:#121b2e; --card2:#18233a; --line:#26324d;
+    --text:#e8eefc; --muted:#94a3c4; --accent:#38bdf8; --accent2:#0ea5e9;
+    --ok:#22c55e; --okbg:rgba(34,197,94,.12); --bad:#ef4444; --badbg:rgba(239,68,68,.12);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Inter,system-ui,sans-serif;background:radial-gradient(1200px 600px at 20% -10%,#123056 0%,transparent 60%),var(--bg);color:var(--text);min-height:100vh}
+  .wrap{max-width:760px;margin:0 auto;padding:28px 18px 60px}
+  header{text-align:center;margin-bottom:22px}
+  .badge{display:inline-block;font-size:12px;font-weight:600;letter-spacing:.08em;color:var(--accent);background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.3);padding:5px 12px;border-radius:999px}
+  h1{font-size:30px;margin:12px 0 6px;font-weight:800}
+  header p{color:var(--muted);margin:0;font-size:15px;line-height:1.5}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+  label{display:block;font-size:13px;color:var(--muted);margin:0 0 6px;font-weight:600}
+  select,input{width:100%;background:var(--card2);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:12px;font:inherit;font-size:15px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+  @media(max-width:560px){.grid{grid-template-columns:1fr}}
+  .hint{font-size:12px;color:var(--muted);margin-top:6px}
+  .btn{appearance:none;border:0;border-radius:12px;padding:13px 20px;font:inherit;font-weight:700;font-size:15px;cursor:pointer;transition:.15s}
+  .btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#04111f;width:100%}
+  .btn.primary:hover{filter:brightness(1.08)}
+  .btn.ghost{background:var(--card2);color:var(--text);border:1px solid var(--line)}
+  .btn:disabled{opacity:.4;cursor:not-allowed}
+  .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font-size:14px;color:var(--muted);gap:10px}
+  .pill{background:var(--card2);border:1px solid var(--line);padding:5px 11px;border-radius:999px;font-weight:600;color:var(--text)}
+  .bar{height:6px;background:var(--card2);border-radius:99px;overflow:hidden;margin-bottom:20px}
+  .bar>div{height:100%;background:linear-gradient(90deg,var(--accent),var(--ok));width:0;transition:width .3s}
+  .qtype{font-size:12px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+  .qtext{font-size:18px;line-height:1.55;font-weight:600;margin:0 0 18px}
+  .opt{display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;background:var(--card2);border:1.5px solid var(--line);color:var(--text);border-radius:12px;padding:14px;margin-bottom:10px;font:inherit;font-size:15px;line-height:1.45;cursor:pointer;transition:.12s}
+  .opt:hover:not(:disabled){border-color:var(--accent)}
+  .opt .k{flex:0 0 28px;height:28px;border-radius:8px;display:grid;place-items:center;background:#0f172a;border:1px solid var(--line);font-weight:700;font-size:13px}
+  .opt:disabled{cursor:default}
+  .opt.correct{border-color:var(--ok);background:var(--okbg)}
+  .opt.correct .k{background:var(--ok);color:#03200f;border-color:var(--ok)}
+  .opt.wrong{border-color:var(--bad);background:var(--badbg)}
+  .opt.wrong .k{background:var(--bad);color:#fff;border-color:var(--bad)}
+  .feedback{margin-top:8px;padding:14px 16px;border-radius:12px;font-size:14.5px;line-height:1.55;display:none}
+  .feedback.ok{display:block;background:var(--okbg);border:1px solid rgba(34,197,94,.4)}
+  .feedback.bad{display:block;background:var(--badbg);border:1px solid rgba(239,68,68,.4)}
+  .feedback b{display:block;margin-bottom:4px;font-size:15px}
+  .actions{display:flex;justify-content:flex-end;margin-top:16px}
+  .actions .btn{width:auto;min-width:150px}
+  .score{text-align:center}
+  .ring{width:150px;height:150px;border-radius:50%;margin:6px auto 14px;display:grid;place-items:center}
+  .ring>div{width:118px;height:118px;border-radius:50%;background:var(--card);display:grid;place-items:center;font-size:30px;font-weight:800}
+  .score h2{margin:4px 0}
+  .score p{color:var(--muted);margin:0 0 20px}
+  .row{display:flex;gap:10px;flex-wrap:wrap}
+  .row .btn{flex:1;min-width:180px}
+  .review{margin-top:24px;text-align:left}
+  .review h3{font-size:16px;margin:0 0 10px}
+  .ri{background:var(--card2);border:1px solid var(--line);border-left:4px solid var(--bad);border-radius:10px;padding:12px 14px;margin-bottom:10px;font-size:14px;line-height:1.5}
+  .ri .q{font-weight:600;margin-bottom:6px}
+  .ri .y{color:#fca5a5}.ri .c{color:#86efac}
+  .hidden{display:none}
+  footer{text-align:center;color:var(--muted);font-size:12px;margin-top:22px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="badge">MPE271 · TEST BANK</span>
+    <h1>Fluid Mechanics Quiz</h1>
+    <p>Conceptual questions from the course test bank — no calculation problems.<br>Questions and answer choices are reshuffled on every attempt.</p>
+  </header>
+
+  <!-- SETUP -->
+  <section id="setup" class="card">
+    <div class="grid">
+      <div>
+        <label for="type">Question type</label>
+        <select id="type">
+          <option value="mcq">Multiple choice (MCQ)</option>
+          <option value="tf">True / False</option>
+          <option value="all">Both</option>
+        </select>
+      </div>
+      <div>
+        <label for="count">Number of questions</label>
+        <select id="count"></select>
+        <div class="hint" id="avail"></div>
+      </div>
+    </div>
+    <button class="btn primary" id="startBtn">Start exam</button>
+  </section>
+
+  <!-- QUIZ -->
+  <section id="quiz" class="card hidden">
+    <div class="top">
+      <span class="pill" id="progress">1 / 10</span>
+      <span class="pill" id="live">Score: 0</span>
+    </div>
+    <div class="bar"><div id="barFill"></div></div>
+    <div class="qtype" id="qtype"></div>
+    <p class="qtext" id="qtext"></p>
+    <div id="opts"></div>
+    <div class="feedback" id="fb"></div>
+    <div class="actions"><button class="btn primary" id="nextBtn" disabled>Next</button></div>
+  </section>
+
+  <!-- RESULT -->
+  <section id="result" class="card score hidden">
+    <div class="ring" id="ring"><div id="pct">0%</div></div>
+    <h2 id="scoreText">Your score: 0 / 0</h2>
+    <p id="msg"></p>
+    <div class="row">
+      <button class="btn primary" id="retakeBtn">Retake (new order)</button>
+      <button class="btn ghost" id="settingsBtn">Change settings</button>
+    </div>
+    <div class="review" id="review"></div>
+  </section>
+
+  <footer>Fluid Mechanics (MPE271) · Based on the course test bank</footer>
+</div>
+
+<script>
+const MCQ = [
+ {q:"Which classification describes a fluid model in which viscosity is zero and frictional and energy losses are neglected?",o:["Ideal flow","Real flow","Compressible flow","Turbulent flow"],a:0,e:"Ideal flow assumes zero viscosity (μ = 0), no friction and no energy loss. It is a theoretical model rather than a condition that exists in real fluids."},
+ {q:"A gas passes through a high-speed nozzle, and its density changes significantly along the flow path. How should the flow be classified with respect to density?",o:["Incompressible","Compressible","Uniform","Steady"],a:1,e:"Compressible flow is characterized by a significant change in density. High-speed gas flow is a typical example."},
+ {q:"At every fixed location in a pipe, velocity remains constant with time, but the velocity measured at one location differs from that at another. Which description is correct?",o:["Unsteady and uniform","Unsteady and non-uniform","Steady and uniform","Steady and non-uniform"],a:3,e:"The absence of time variation at each fixed point indicates steady flow. The space variation between locations makes it non-uniform."},
+ {q:"During the closing of a control valve, the pressure and velocity measured at a fixed point change with time. Which flow classification applies?",o:["Unsteady flow","Steady flow","Uniform flow","Ideal flow"],a:0,e:"Unsteady flow occurs when one or more fluid properties at a fixed point change with time. Valve operation is a typical transient event."},
+ {q:"A pipe-flow system has Re = 5200. Which flow regime is most appropriate?",o:["Laminar","Transitional","Turbulent","Compressible"],a:2,e:"For pipe flow, Re > 4000 indicates turbulent flow."},
+ {q:"A process requires a pump to operate at a pressure of 450 bar. Which pump class is consistent with the stated pressure capability?",o:["Non-positive-displacement pump","Positive-displacement pump","Axial-flow rotodynamic pump only","Mixed-flow rotodynamic pump only"],a:1,e:"Positive-displacement pumps are described as suitable for high-pressure applications up to about 700 bar, whereas non-positive-displacement pumps are associated with maximum pressures of about 18–20 bar."},
+ {q:"A chemical-transfer process involves a corrosive or hazardous liquid. Which reciprocating-pump type is identified as suitable for this duty?",o:["Diaphragm pump","Axial-flow pump","Centrifugal pump","Mixed-flow pump"],a:0,e:"Diaphragm pumps are identified as suitable for corrosive or hazardous fluids."},
+ {q:"A transfer system handles highly viscous crude oil. Which rotary-pump type is specifically associated with this application?",o:["Screw pump","Axial-flow pump","Open-impeller centrifugal pump","Diaphragm pump"],a:0,e:"Screw pumps are identified as efficient for high-viscosity fluids such as crude oil."},
+ {q:"A pumping system requires a high flow rate against a relatively low head, with the impeller moving fluid parallel to the shaft. Which pump type is most appropriate?",o:["Centrifugal pump","Axial-flow pump","Mixed-flow pump","Reciprocating piston pump"],a:1,e:"An axial-flow pump moves fluid parallel to the pump shaft and is associated with high flow rates and low head."},
+ {q:"A liquid is clean and relatively free from debris, and high pump efficiency and good liquid guidance are desired. Which impeller is most suitable?",o:["Open impeller","Semi-open impeller","Shrouded or closed impeller","Axial propeller"],a:2,e:"A shrouded or closed impeller has cover plates on both sides, provides better liquid guidance and high efficiency, and is used for relatively clean liquids."},
+ {q:"An impeller has vanes attached to a base plate but has no crown plate. Which type is it?",o:["Closed","Semi-open","Open","Diffuser"],a:1,e:"A semi-open impeller has a base plate but no crown plate. It can be used when the liquid contains some debris."},
+ {q:"A wastewater stream contains suspended solids. Which impeller construction is identified as suitable?",o:["Closed","Semi-open","Open","Closed, with a diffuser ring"],a:2,e:"An open impeller has neither a crown plate nor a base plate and is used for liquids containing suspended solids, such as sewage or water containing sand."},
+ {q:"In a volute casing, the flow area gradually increases from the impeller outlet toward the delivery pipe. What is the expected effect?",o:["Velocity increases and pressure decreases","Velocity decreases and pressure increases","Both velocity and pressure remain unchanged","Density increases while velocity remains constant"],a:1,e:"The increasing flow area reduces fluid velocity, allowing kinetic energy to be converted into pressure energy."},
+ {q:"External leakage in a centrifugal pump belongs to which loss category?",o:["Hydraulic losses","Leakage or volumetric losses","Mechanical losses","Kinetic-energy recovery"],a:1,e:"External leakage is listed under leakage (volumetric) losses, together with internal leakage."},
+ {q:"Friction and minor losses in the suction and delivery pipes are classified as which type of pump loss?",o:["Hydraulic losses","Volumetric losses","Mechanical losses","Electrical losses"],a:0,e:"The friction and other minor losses in both suction and delivery pipes are included among the hydraulic losses."},
+ {q:"Which set contains only mechanical losses identified in centrifugal pumps?",o:["Bearing friction, seal friction, disc friction and shaft misalignment","Impeller friction, guide-vane eddies and shock at the impeller inlet","Internal leakage, external leakage and casing eddies","Suction-pipe friction, delivery-pipe friction and internal leakage"],a:0,e:"Mechanical losses are associated with bearing friction, seal friction, disc friction and shaft misalignment."},
+ {q:"Two centrifugal pumps are geometrically similar. Which condition must be satisfied?",o:["Corresponding linear dimensions have the same scale ratio, and corresponding blade angles are equal","The two pumps must have identical absolute dimensions","Their flow rates must be equal regardless of size and speed","Their efficiencies must be different"],a:0,e:"Geometric similarity requires the same shape, a common scale ratio for corresponding linear dimensions and equal corresponding blade angles. The model and prototype may differ in size."},
+ {q:"A pump has a specific speed of 15. Which impeller-flow category corresponds to this value?",o:["Slow-speed radial flow","High-speed radial flow","Mixed flow","Axial flow"],a:0,e:"A specific speed between 10 and 30 corresponds to a slow-speed radial flow."}
+];
+const TF = [
+ ["Ideal flow assumes zero viscosity, no friction and no energy loss.",true,"These are the defining assumptions of the ideal-flow model."],
+ ["A real fluid is characterized by zero viscosity and the complete absence of frictional losses.",false,"A real fluid has viscosity. Viscosity produces friction and energy losses in actual flow systems."],
+ ["In incompressible flow, fluid density remains constant during flow.",true,"Incompressible flow is characterized by constant density (ρ = constant)."],
+ ["Compressible flow is defined by a density that remains constant throughout the flow.",false,"Compressible flow involves a significant change in density (ρ is not constant), commonly encountered in high-speed gas flow."],
+ ["In steady flow, fluid properties at a fixed point do not change with time.",true,"Steady flow means that properties measured at a particular location remain unchanged with time."],
+ ["Flow during machine start-up or shutdown is generally classified as steady flow.",false,"Start-up and shutdown are transient processes in which fluid properties change with time; they are generally unsteady."],
+ ["A flow can be steady and non-uniform when properties remain constant with time at each fixed point but differ between locations.",true,"Steadiness describes time variation at a fixed point, whereas uniformity describes spatial variation. The two classifications are independent."],
+ ["Laminar pipe flow is smooth and orderly and generally occurs for Reynolds numbers below 2300.",true,"The stated pipe-flow criterion for laminar flow is Re < 2300."],
+ ["Turbulent flow minimizes energy loss compared with laminar flow.",false,"Turbulent flow involves irregular motion and mixing and increases energy losses; laminar flow is described as minimizing energy loss."],
+ ["Uniform flow requires velocity to remain unchanged both from point to point and with time.",false,"Uniformity refers to velocity remaining the same from point to point along the flow direction. Time independence is the separate condition for steady flow."],
+ ["In non-uniform flow, velocity remains the same from one point to another along the flow direction.",false,"Non-uniform flow is characterized by velocity changing from one point to another."],
+ ["If an incompressible fluid's volumetric flow rate is fixed and the pipe area is halved, its average velocity is also halved.",false,"From Q̇ = AV, velocity is inversely proportional to area at fixed flow rate. Halving area doubles velocity."],
+ ["If the diameter of a pipe is doubled while the incompressible volume flow rate remains constant, the average velocity doubles.",false,"Doubling diameter makes the cross-sectional area four times larger (A = πD²/4). At fixed Q̇, average velocity becomes one-quarter of its original value."],
+ ["An axial-flow pump moves fluid perpendicular to the pump shaft and is mainly used for high head and low flow.",false,"An axial-flow pump moves fluid parallel to the shaft and is associated with high flow rates and low head."],
+ ["A positive-displacement pump is characterized by a flow rate that varies with changing pressure.",false,"The stated characteristic of a positive-displacement pump is approximately constant flow as pressure changes."],
+ ["Positive-displacement pumps are limited to maximum pressures of about 18–20 bar.",false,"Positive-displacement pumps are described for high-pressure applications up to about 700 bar. The 18–20 bar limit is associated with non-positive-displacement pumps."],
+ ["Reciprocating pumps use pistons or diaphragms and can deliver precise, high-pressure flow.",true,"These are the defining features given for reciprocating positive-displacement pumps."],
+ ["Diaphragm pumps are suitable for corrosive or hazardous fluids.",true,"Diaphragm pumps are identified as suitable for corrosive or hazardous liquids."],
+ ["Lobe pumps are commonly used in food and pharmaceutical industries.",true,"Lobe pumps are specifically associated with food and pharmaceutical applications."],
+ ["Gear pumps and vane pumps are used in applications such as lubrication systems and fuel transfer.",true,"These are the stated applications of gear and vane pumps."],
+ ["An open impeller is preferred for clean liquids because it provides the highest efficiency and best liquid guidance.",false,"The closed impeller provides better liquid guidance and high efficiency for clean liquids. The open impeller is used for liquids containing suspended solids."],
+ ["An open impeller has neither a crown plate nor a base plate and is suitable for liquids containing suspended solids.",true,"The open construction leaves the vanes exposed on both sides and is used for liquids such as sewage or water containing sand."],
+ ["The flow area in a volute casing gradually increases toward the delivery pipe, reducing velocity and increasing pressure.",true,"The increasing area reduces flow velocity and converts kinetic energy into pressure energy."],
+ ["In a casing with guide blades, the passages between the blades gradually increase in area, reducing velocity and converting kinetic energy into pressure energy.",true,"The guide blades form diffuser passages with increasing area, which reduces velocity and increases pressure."],
+ ["Hydraulic losses in a centrifugal pump consist only of bearing friction and seal friction.",false,"Bearing and seal friction are mechanical losses. Hydraulic losses include impeller friction, eddy and shock losses, and pipe friction/minor losses."],
+ ["Bearing friction, seal friction, disc friction and shaft misalignment are contributors to mechanical losses.",true,"All four are identified as contributors to mechanical losses."],
+ ["Friction and other minor losses in the suction and delivery pipes are classified as hydraulic losses.",true,"Pipe friction and minor losses are included among the other hydraulic losses."],
+ ["Geometric similarity requires the model and prototype to have identical absolute dimensions.",false,"They must have the same shape and a common scale ratio for corresponding dimensions, but they may differ in size."],
+ ["Dynamic similarity requires the ratios of the forces acting on the fluid to be the same in the two systems.",true,"Dynamic similarity concerns matching force ratios, including inertial, gravitational, pressure and viscous effects."]
+];
+
+const BANK = [
+  ...MCQ.map(x=>({t:"mcq",q:x.q,o:x.o,a:x.a,e:x.e})),
+  ...TF.map(([q,ans,e])=>({t:"tf",q,o:["True","False"],a:ans?0:1,e}))
+];
+
+const $=id=>document.getElementById(id);
+const shuffle=arr=>{const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+let settings={type:"mcq",count:0}, exam=[], idx=0, score=0, answered=false, wrong=[];
+
+function pool(type){return type==="all"?BANK:BANK.filter(x=>x.t===type)}
+function fillCounts(){
+  const n=pool($("type").value).length, sel=$("count"), opts=[5,10,15,20,25,30,40].filter(v=>v<n);
+  sel.innerHTML=opts.map(v=>`<option value="${v}">${v}</option>`).join("")+`<option value="${n}" selected>All (${n})</option>`;
+  $("avail").textContent=`${n} questions available`;
+}
+$("type").onchange=fillCounts; fillCounts();
+
+function build(){
+  // new random question order AND new random option order every attempt
+  exam=shuffle(pool(settings.type)).slice(0,settings.count).map(item=>{
+    if(item.t==="tf") return {...item, opts:item.o.map((txt,i)=>({txt,ok:i===item.a}))}; // keep True/False order natural
+    return {...item, opts:shuffle(item.o.map((txt,i)=>({txt,ok:i===item.a})))};
+  });
+  idx=0; score=0; wrong=[];
+}
+function show(id){["setup","quiz","result"].forEach(s=>$(s).classList.toggle("hidden",s!==id)); window.scrollTo({top:0,behavior:"smooth"})}
+
+function render(){
+  const it=exam[idx]; answered=false;
+  $("progress").textContent=`Question ${idx+1} / ${exam.length}`;
+  $("live").textContent=`Score: ${score}`;
+  $("barFill").style.width=`${(idx/exam.length)*100}%`;
+  $("qtype").textContent=it.t==="tf"?"True / False":"Multiple choice";
+  $("qtext").textContent=it.q;
+  const letters="ABCD";
+  $("opts").innerHTML="";
+  it.opts.forEach((op,i)=>{
+    const b=document.createElement("button");
+    b.className="opt";
+    b.innerHTML=`<span class="k">${it.t==="tf"?(i?"F":"T"):letters[i]}</span><span></span>`;
+    b.lastChild.textContent=op.txt;
+    b.onclick=()=>choose(i);
+    $("opts").appendChild(b);
+  });
+  $("fb").className="feedback"; $("fb").innerHTML="";
+  $("nextBtn").disabled=true;
+  $("nextBtn").textContent=idx===exam.length-1?"See score":"Next";
+}
+
+function choose(i){
+  if(answered) return; answered=true;
+  const it=exam[idx], btns=[...$("opts").children], right=it.opts.findIndex(o=>o.ok);
+  btns.forEach(b=>b.disabled=true);
+  btns[right].classList.add("correct");
+  const fb=$("fb");
+  if(i===right){score++; fb.className="feedback ok"; fb.innerHTML="<b>✓ Correct!</b>";}
+  else{
+    btns[i].classList.add("wrong");
+    fb.className="feedback bad"; fb.innerHTML="<b>✗ Wrong</b>";
+    const s=document.createElement("div"); s.textContent="Correct answer: "+it.opts[right].txt; s.style.fontWeight="600"; s.style.marginBottom="4px"; fb.appendChild(s);
+    wrong.push({q:it.q,y:it.opts[i].txt,c:it.opts[right].txt,e:it.e});
+  }
+  const ex=document.createElement("div"); ex.textContent=it.e; fb.appendChild(ex);
+  $("live").textContent=`Score: ${score}`;
+  $("barFill").style.width=`${((idx+1)/exam.length)*100}%`;
+  $("nextBtn").disabled=false;
+}
+
+$("nextBtn").onclick=()=>{ if(!answered) return; if(idx<exam.length-1){idx++;render();window.scrollTo({top:0,behavior:"smooth"})} else finish(); };
+
+function finish(){
+  const pct=Math.round(score/exam.length*100);
+  const col=pct>=85?"var(--ok)":pct>=60?"var(--accent)":"var(--bad)";
+  $("ring").style.background=`conic-gradient(${col} ${pct*3.6}deg, var(--card2) 0)`;
+  $("pct").textContent=pct+"%";
+  $("scoreText").textContent=`Your score: ${score} / ${exam.length}`;
+  $("msg").textContent=pct===100?"Perfect score! 🎉":pct>=85?"Excellent work!":pct>=60?"Good job — review the ones you missed.":"Keep practicing — retake to improve.";
+  const r=$("review"); r.innerHTML="";
+  if(wrong.length){
+    const h=document.createElement("h3"); h.textContent=`Review your mistakes (${wrong.length})`; r.appendChild(h);
+    wrong.forEach(w=>{
+      const d=document.createElement("div"); d.className="ri";
+      d.innerHTML='<div class="q"></div><div class="y"></div><div class="c"></div><div style="color:var(--muted);margin-top:4px"></div>';
+      d.children[0].textContent=w.q; d.children[1].textContent="Your answer: "+w.y; d.children[2].textContent="Correct: "+w.c; d.children[3].textContent=w.e;
+      r.appendChild(d);
+    });
+  }
+  show("result");
+}
+
+$("startBtn").onclick=()=>{settings={type:$("type").value,count:+$("count").value};build();render();show("quiz")};
+$("retakeBtn").onclick=()=>{build();render();show("quiz")};
+$("settingsBtn").onclick=()=>show("setup");
+</script>
+</body>
+</html>
